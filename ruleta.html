@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruleta de Premios</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #C9DDD8;
+            flex-direction: column;
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .ruleta-container {
+            position: relative;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-left, .image-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+        }
+
+        .image-left {
+            left: -70px;
+        }
+
+        .image-right {
+            right: -70px;
+        }
+
+        .ruleta {
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            border: 6px solid #3b5f65;
+            transition: transform 4s ease-out;
+        }
+        .flecha {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) rotate(180deg);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #7CACAB;
+        }
+        button {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 24px;
+            cursor: pointer;
+            background-color: #71B980;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #AEE5B4;
+        }
+        .resultado {
+            margin-top: 30px;
+            font-size: 30px;
+            font-weight: 500;
+            text-align: center;
+            color: #3b5f65;
+        }
+
+        .imagen-ajustada {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+        }
+
+        .firma {
+            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .firma img {
+            width: 30%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* Estilo para el cartel de Sorteo Terminado */
+        .cartel-terminado {
+            display: none;
+            font-size: 36px;
+            font-weight: bold;
+            color: red;
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ruleta-container">
+        <div class="image-left"></div>
+        <canvas id="ruleta" class="ruleta"></canvas>
+    </div>
+    <button onclick="girarRuleta()">Girar</button>
+    <div class="resultado" id="resultado">¡Gira la ruleta para ver el premio!</div>
+    <div class="firma">
+        <img src="./img/4KT4TC8qlnVIFEu9Fx-hV98c2irm1eB3Z2.png" alt="Firma alargada">
+    </div>
+    
+    <!-- Cartel de Sorteo Terminado -->
+    <div class="cartel-terminado" id="cartel-terminado">¡SORTEO TERMINADO!</div>
+
+    <script>
+        const canvas = document.getElementById("ruleta");
+        const ctx = canvas.getContext("2d");
+        canvas.width = 480;
+        canvas.height = 480;
+
+        const premios = [
+            { nombre: "Segui participando", peso: 98.5 },    // 98.5% chance
+            { nombre: "Regalo sorpresa", peso: 0 },           // 0% chance
+            { nombre: "Descuentos", peso: 0.5 },              // 0.5% chance
+            { nombre: "Cuarto Continente", peso: 0.25 },      // 0.25% chance
+            { nombre: "Disfruta Argentina", peso: 0.75 }      // 0.75% chance
+        ];
+
+        const totalPeso = premios.reduce((sum, premio) => sum + premio.peso, 0);
+        const colores = ["#E2F1E1", "#71B980", "#AEE5B4", "#7CACAB", "#C9DDD8"];
+        const numSectores = premios.length;
+        const anguloSector = (2 * Math.PI) / numSectores;
+        let anguloActual = 0;
+
+        let contadorClicks = 0; // Variable para contar los clics
+
+        function dibujarRuleta() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < numSectores; i++) {
+                const anguloInicio = i * anguloSector;
+                const anguloFin = (i + 1) * anguloSector;
+                ctx.beginPath();
+                ctx.moveTo(240, 240);
+                ctx.arc(240, 240, 240, anguloInicio, anguloFin);
+                ctx.fillStyle = colores[i % colores.length];
+                ctx.fill();
+                ctx.stroke();
+                ctx.save();
+                ctx.translate(240, 240);
+                ctx.rotate(anguloInicio + anguloSector / 2);
+                ctx.fillStyle = "black";
+                ctx.font = "20px Arial";
+                ctx.textAlign = "right";
+                ctx.fillText(premios[i].nombre, 200, 10);
+                ctx.restore();
+            }
+        }
+
+        function girarRuleta() {
+            if (contadorClicks >= 150) {
+                document.getElementById("cartel-terminado").style.display = "block"; // Mostrar cartel de sorteo terminado
+                return; // Evitar que se gire más después de 150 clics
+            }
+
+            contadorClicks++; // Incrementar el contador de clics
+
+            // Limpiar el mensaje de resultado antes de girar
+            document.getElementById("resultado").textContent = "Cargando...";
+
+            let rotacion = Math.floor(Math.random() * 360) + 1800;
+            anguloActual += rotacion;
+            canvas.style.transform = `rotate(${anguloActual}deg)`;
+
+            setTimeout(() => {
+                let anguloFinal = anguloActual % 360;
+                let indiceGanador = obtenerIndiceGanador(anguloFinal);
+
+                const resultadoElement = document.getElementById("resultado");
+                resultadoElement.textContent = "¡" + premios[indiceGanador].nombre + "!";
+            }, 4000);
+        }
+
+        function obtenerIndiceGanador(anguloFinal) {
+            // Calculamos el rango de cada premio en base a su peso
+            let rangoTotal = 0;
+            let indiceGanador = 0;
+            let angulo = (90 - anguloFinal + 360) % 360;
+
+            for (let i = 0; i < premios.length; i++) {
+                rangoTotal += premios[i].peso;
+                if (angulo <= (rangoTotal / totalPeso) * 360) {
+                    indiceGanador = i;
+                    break;
+                }
+            }
+
+            return indiceGanador;
+        }
+
+        dibujarRuleta();
+    </script>
+</body>
+</html>
