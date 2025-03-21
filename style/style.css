@@ -1,0 +1,120 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #C9DDD8;
+    flex-direction: column;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.ruleta-container {
+    position: relative;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-left, .image-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+}
+
+.image-left {
+    left: -70px;
+}
+
+.image-right {
+    right: -70px;
+}
+
+.ruleta {
+    width: 480px;
+    height: 480px;
+    border-radius: 50%;
+    border: 6px solid #3b5f65;
+    transition: transform 4s ease-out;
+}
+.flecha {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%) rotate(180deg);
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 40px solid #7CACAB;
+}
+button {
+    margin-top: 30px;
+    padding: 15px 30px;
+    font-size: 24px;
+    cursor: pointer;
+    background-color: #71B980;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    transition: background 0.3s;
+}
+button:hover {
+    background-color: #AEE5B4;
+}
+.resultado {
+    margin-top: 30px;
+    font-size: 30px;
+    font-weight: 500;
+    text-align: center;
+    color: #3b5f65;
+}
+
+.imagen-ajustada {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.firma {
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+}
+.firma img {
+    width: 30%;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Estilo para el cartel de Sorteo Terminado */
+.cartel-terminado {
+    display: none;
+    font-size: 36px;
+    font-weight: bold;
+    color: red;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.flecha {
+    position: absolute;
+    top: 50%;
+    left: calc(50% + 210px);
+    transform: translateY(-50%) rotate(182deg);
+    width: 0;
+    height: 0;
+    border-left: 40px solid red;
+    border-top: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+}
+.ruleta-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 500px;
+}
